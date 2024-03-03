@@ -1,20 +1,22 @@
+// netlify/functions/api.js
 const express = require('express');
-const path = require('path');
-const cors = require('cors');
+const serverless = require('serverless-http');
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Adjust CORS options as needed
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Serve static files from the /docs directory
-app.use(express.static(path.join('.', '/docs')));
-
-// Handle SPA routing, return all requests to the Angular app
-app.get('*', (req, res) => {
-  res.sendFile(path.join('.', '/docs/index.html'));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.get('/api/data', (req, res) => {
+  res.json({ message: 'This is CORS-enabled for all origins!' });
 });
+
+module.exports.handler = serverless(app);

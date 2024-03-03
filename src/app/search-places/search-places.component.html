@@ -1,0 +1,20 @@
+<!-- search-places.component.html -->
+<div>
+  <input [(ngModel)]="query" type="text" placeholder="Search places...">
+  <button (click)="search()">Search</button>
+</div>
+
+<table *ngIf="places.length > 0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Phone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let place of places">
+      <td>{{ place.name }}</td>
+      <td>{{ place.phone }}</td>
+    </tr>
+  </tbody>
+</table>

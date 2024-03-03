@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class GoogleMapsService {
-  private functionUrl = '/.netlify/functions/googleMapsProxy'; // URL to the Netlify Function
+  private functionUrl = '/.netlify/functions/googlemapsproxy'; // URL to the Netlify Function
 
   constructor(private http: HttpClient) { }
 

@@ -18,6 +18,7 @@
       "prefix": "app",
       "architect": {
         "build": {
+          "baseHref": "/google-business-search/",
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/google-maps-business-numbers",

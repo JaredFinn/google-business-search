@@ -48,4 +48,15 @@ export class SearchPlacesComponent {
       });
     });
   }
+
+   // Method to remove an item
+   removePlace(searchIndex: number, placeIndex: number): void {
+    // Remove the place at placeIndex from the search result at searchIndex
+    this.searchResults[searchIndex].places.splice(placeIndex, 1);
+
+    // Optionally, remove the search result itself if it has no more places
+    if (this.searchResults[searchIndex].places.length === 0) {
+      this.searchResults.splice(searchIndex, 1);
+    }
+  }
 }

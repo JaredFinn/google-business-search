@@ -1,60 +1,42 @@
 <div class="container">
-  <!-- <div class="search-container mb-3">
-    <input [(ngModel)]="query" type="text" class="form-control" id="exampleFormControlInput1" (keydown.enter)="search()" placeholder="Search a place - Ex. 'Restaurants in Stony Point'">
+  <div class="search-container mb-3">
+    <input [(ngModel)]="query" 
+           type="text" 
+           class="form-control" 
+           placeholder="Search a place - Ex. 'Restaurants in Stony Point'"
+           (keydown.enter)="search()">
     <button type="button" class="btn btn-primary" (click)="search()">Search</button>
   </div>
 
-  <div *ngFor="let searchResult of searchResults; let i = index">
+  <!-- Error message when no results are found -->
+  <div *ngIf="noResultsFound" class="alert alert-warning" role="alert">
+    No results found for "{{ error_search }}". Please try a different search.
+  </div>
+
+  <!-- Tables displaying search results -->
+  <div *ngFor="let searchResult of searchResults; let searchIndex = index">
     <h3>{{ searchResult.query }}</h3>
-    <table *ngIf="searchResult.places.length > 0">
+    <table class="table">
       <thead>
         <tr>
           <th class="table-column-margin">Name</th>
           <th>Phone</th>
+          <th>Remove</th> <!-- Header for the remove column -->
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let place of searchResult.places">
+        <tr *ngFor="let place of searchResult.places; let placeIndex = index">
           <td class="table-column-margin">{{ place.name }}</td>
           <td>{{ place.phone }}</td>
+          <td>
+            <!-- Bootstrap-styled checkbox for removing the place -->
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" (change)="removePlace(searchIndex, placeIndex)">
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
-    <hr *ngIf="i < searchResults.length - 1"> <!-- Optional: Add a horizontal line between search result sets --
-</div>  -->
-
-
-<div class="search-container mb-3">
-  <input [(ngModel)]="query" 
-         type="text" 
-         class="form-control" 
-         placeholder="Search a place - Ex. 'Restaurants in Stony Point'"
-         (keydown.enter)="search()">
-  <button type="button" class="btn btn-primary" (click)="search()">Search</button>
-</div>
-
-<!-- Error message when no results are found -->
-<div *ngIf="noResultsFound" class="alert alert-warning" role="alert">
-  No results found for "{{ error_search }}". Please try a different search.
-</div>
-
-<!-- Existing code for displaying search results -->
-  <div *ngFor="let searchResult of searchResults; let i = index">
-    <h3>{{ searchResult.query }}</h3>
-    <table *ngIf="searchResult.places.length > 0">
-      <thead>
-        <tr>
-          <th class="table-column-margin">Name</th>
-          <th>Phone</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let place of searchResult.places">
-          <td class="table-column-margin">{{ place.name }}</td>
-          <td>{{ place.phone }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <hr *ngIf="i < searchResults.length - 1"> <!-- Optional: Add a horizontal line between search result sets -->
+    <hr *ngIf="searchIndex < searchResults.length - 1">
   </div>
 </div>

@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
 import { GoogleMapsService } from '../google-maps.service';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+export interface SearchResult {
+  query: string;
+  places: any[];
+}
 
 @Component({
   selector: 'app-search-places',
@@ -8,32 +15,37 @@ import { GoogleMapsService } from '../google-maps.service';
 })
 export class SearchPlacesComponent {
   query: string = '';
-  places: any[] = [];
+  searchResults: SearchResult[] = [];
+  noResultsFound: boolean = false; // Flag to track if no results were found
+  error_search: string = '';
 
   constructor(private googleMapsService: GoogleMapsService) { }
 
   search(): void {
-    this.googleMapsService.searchPlaces(this.query).subscribe(places => {
-      this.places = []; // Reset places array for new search
-      const detailObservables = [];
-      places.forEach(place => {
-        // Request place details for each place
-        const detailObservable = this.googleMapsService.getPlaceDetails(place.place_id).subscribe(detail => {
-          console.log(detail)
-          if (!detail.website) {
-            // Assuming 'detail' includes a 'phone' field with the place's phone number
-            this.places.push({
-              name: detail.name,
-              place_id: place.place_id,
-              phone: detail.formatted_phone_number // Use the actual property name from your service
-            });
-          }
-        });
-        detailObservables.push(detailObservable);
-      });
+    this.googleMapsService.searchPlaces(this.query).subscribe(initialPlaces => {
+      this.noResultsFound = false;
+      if (initialPlaces.length === 0) {
+        return; // No places found, so don't do anything further
+      }
+      const detailObservables = initialPlaces.map(place =>
+        this.googleMapsService.getPlaceDetails(place.place_id)
+      );
 
-      // Optionally, if you need to perform actions after all details have been fetched,
-      // consider using RxJS's forkJoin with detailObservables as shown in previous examples.
+      forkJoin(detailObservables).subscribe(details => {
+        // Filter out places without a website
+        const placesWithDetails = details.filter(detail => !detail.website).map(detail => ({
+          name: detail.name,
+          place_id: detail.place_id,
+          phone: detail.formatted_phone_number,
+        }));
+
+        if (placesWithDetails.length > 0) {
+          this.searchResults.push({ query: this.query, places: placesWithDetails });
+        }else{
+          this.error_search = this.query;
+          this.noResultsFound = true;
+        }
+      });
     });
   }
 }

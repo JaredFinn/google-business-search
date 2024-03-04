@@ -1,0 +1,16 @@
+.search-container{
+    display: flex;
+    width: 500px;
+}
+
+.btn{
+    margin-left: 20px;
+}
+
+.table-column-margin{
+    padding-right: 20px;
+}
+
+.container{
+    margin: 5%;
+}
